@@ -1,11 +1,14 @@
 import { Table, Button, Row } from 'react-bootstrap';
 import React, { useState, useEffect } from "react";
 
+import EditModal from '../components/EditModal';
+
 const BASE_URL = 'https://elite-dev-test-api.azurewebsites.net/api';
 
 const Contacts = () => {
   const [contacts, setContacts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() =>{
     fetch(
       `${BASE_URL}/Contact`,
@@ -52,12 +55,11 @@ const Contacts = () => {
                 </Button>
               </td>
               <td>
-                <Button
-                  variant='primary'
-                  onClick={() => openEditModal(contact)}
+                <EditModal
+                  contact={ contact }
                 >
                   Edit
-                </Button>
+                </EditModal>
               </td>
             </tr>
           ))}
@@ -76,7 +78,7 @@ const deleteContact = (id) => {
 }
 
 const openEditModal = (contact) => {
-  console.log(contact);
+  <EditModal contact={ contact }/>
 }
 
 export default Contacts;
