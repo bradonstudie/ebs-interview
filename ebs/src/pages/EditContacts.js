@@ -1,7 +1,7 @@
 const EditContacts = () => (
-  <h1>
+  <h2>
     Add/Edit Contacts
-  </h1>
+  </h2>
 );
 
 export default EditContacts;
