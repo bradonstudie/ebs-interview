@@ -4,7 +4,9 @@ import {
   Switch,
   Route,
   Link
-} from "react-router-dom";
+} from 'react-router-dom';
+import Contacts from './pages/Contacts';
+import EditContacts from './pages/EditContacts';
 
 function App() {
   return (
@@ -44,12 +46,12 @@ function Home() {
   return <h2>Home</h2>;
 }
 
-function Contacts() {
-  return <h2>Edit Contacts</h2>;
-}
+// function Contacts() {
+//   return <h2>Edit Contacts</h2>;
+// }
 
-function EditContacts() {
-  return <h2>Contacts</h2>;
-}
+// function EditContacts() {
+//   return <h2>Contacts</h2>;
+// }
 
 export default App;
