@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Modal, Button, Form } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPen } from '@fortawesome/free-solid-svg-icons'
 import useInput from './UseInput';
 
 const EditModal = (props) => {
@@ -24,7 +26,7 @@ const EditModal = (props) => {
   return (
     <>
       <Button variant="primary" onClick={handleShow}>
-        Edit
+        <FontAwesomeIcon icon={faPen} />
       </Button>
 
       <Modal

@@ -1,5 +1,8 @@
-import { Table, Button, Row, Spinner, Col } from 'react-bootstrap';
 import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlus, faTrash, faUser } from '@fortawesome/free-solid-svg-icons'
+
+import { Table, Button, Row, Spinner, Col } from 'react-bootstrap';
 import EditModal from '../components/EditModal';
 
 const BASE_URL = 'https://elite-dev-test-api.azurewebsites.net/api';
@@ -33,8 +36,15 @@ const Contacts = () => {
   return (
     <>
       <Row>
-        <Col>
+        <Col xs={6}>
           <h2>Contacts</h2>
+        </Col>
+        <Col xs={6}>
+          <Button variant="primary" style={{float: 'right'}}>
+            <FontAwesomeIcon icon={faPlus} />
+            &nbsp;
+            <FontAwesomeIcon icon={faUser} />
+          </Button>
         </Col>
       </Row>
 
@@ -62,13 +72,11 @@ const Contacts = () => {
                       <td>{ contact.email }</td>
                       <td>
                         <Button variant="danger" onClick={() => deleteContact(contact.id)}>
-                          Delete Contact
+                          <FontAwesomeIcon icon={faTrash} />
                         </Button>
                       </td>
                       <td>
-                        <EditModal contact={contact}>
-                          Edit
-                        </EditModal>
+                        <EditModal contact={contact} />
                       </td>
                     </tr>
                   ))}
