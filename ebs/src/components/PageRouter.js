@@ -6,16 +6,12 @@ import {
 
 import Home from '../pages/Home';
 import Contacts from '../pages/Contacts';
-import EditContacts from '../pages/EditContacts';
 
 const PageRouter = () => (
   <Router>
     <Switch>
       <Route path="/contacts">
         <Contacts />
-      </Route>
-      <Route path="/edit-contacts">
-        <EditContacts />
       </Route>
       <Route path="/">
         <Home />
