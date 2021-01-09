@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, } from "react"
 import { Modal, Button, Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPen } from '@fortawesome/free-solid-svg-icons'
+import { faPen, faPlus, faUser } from '@fortawesome/free-solid-svg-icons'
 import useInput from './UseInput';
 
 const EditModal = (props) => {
@@ -10,10 +10,10 @@ const EditModal = (props) => {
 
   const [show, setShow] = useState(false);
 
-  const { contact } = props;
+  const contact = props.contact;
 
-  const { value:name, bind:bindName, reset:resetName } = useInput(contact.name);
-  const { value:email, bind:bindEmail, reset:resetEmail } = useInput(contact.email);
+  const { value:name, bind:bindName, reset:resetName } = useInput(contact ? contact.name : '');
+  const { value:email, bind:bindEmail, reset:resetEmail } = useInput(contact ? contact.email : '');
 
   const handleSubmit = (event) => {
       event.preventDefault();
@@ -26,7 +26,14 @@ const EditModal = (props) => {
   return (
     <>
       <Button variant="primary" onClick={handleShow}>
-        <FontAwesomeIcon icon={faPen} />
+        { contact
+          ? <FontAwesomeIcon icon={faPen} />
+          : <>
+              <FontAwesomeIcon icon={faPlus} />
+              &nbsp;
+              <FontAwesomeIcon icon={faUser} />
+            </>
+        }
       </Button>
 
       <Modal
@@ -36,16 +43,22 @@ const EditModal = (props) => {
         keyboard={false}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Edit {contact.name}</Modal.Title>
+          <Modal.Title>
+            { contact
+                ? `Edit ${contact.name}`
+                : 'Add a Contact'
+            }
+          </Modal.Title>
         </Modal.Header>
 
         <Form onSubmit={handleSubmit}>
           <Modal.Body>
-            <Form.Group>
-              <Form.Label>Contact ID</Form.Label>
-              <Form.Control placeholder="Disabled input" defaultValue={contact.id} disabled />
-            </Form.Group>
-
+            { contact &&
+              <Form.Group>
+                <Form.Label>Contact ID</Form.Label>
+                <Form.Control placeholder="Disabled input" defaultValue={contact ? contact.id : null} disabled />
+              </Form.Group>
+            }
             <Form.Group controlId="formGroupName">
               <Form.Label>Name</Form.Label>
               <Form.Control type="name" placeholder="Name" {...bindName} />
@@ -58,7 +71,7 @@ const EditModal = (props) => {
           </Modal.Body>
           <Modal.Footer>
             <Button variant="primary" type="submit" value="Submit">
-              Update
+              { contact ? 'Update' : 'Create' }
             </Button>
             <Button variant="secondary" onClick={handleClose}>
               Close

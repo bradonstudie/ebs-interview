@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faTrash, faUser } from '@fortawesome/free-solid-svg-icons'
-
 import { Table, Button, Row, Spinner, Col } from 'react-bootstrap';
+
 import EditModal from '../components/EditModal';
 
 const BASE_URL = 'https://elite-dev-test-api.azurewebsites.net/api';
@@ -10,10 +10,11 @@ const BASE_URL = 'https://elite-dev-test-api.azurewebsites.net/api';
 const Contacts = () => {
   const [contacts, setContacts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() =>{
     fetch(
       `${BASE_URL}/Contact`,
-      { method: "GET" }
+      { method: 'GET' }
     )
     .then(res => res.json())
     .then(response => {
@@ -33,6 +34,13 @@ const Contacts = () => {
     });
   }
 
+  const createContact = (id) => {
+    fetch(
+      `${BASE_URL}/Contact`,
+      { method: 'POST' }
+    )
+  }
+
   return (
     <>
       <Row>
@@ -40,11 +48,9 @@ const Contacts = () => {
           <h2>Contacts</h2>
         </Col>
         <Col xs={6}>
-          <Button variant="primary" style={{float: 'right'}}>
-            <FontAwesomeIcon icon={faPlus} />
-            &nbsp;
-            <FontAwesomeIcon icon={faUser} />
-          </Button>
+          <div style={{float: 'right'}}>
+            <EditModal contact={null} />
+          </div>
         </Col>
       </Row>
 
