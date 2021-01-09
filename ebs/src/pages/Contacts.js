@@ -34,13 +34,6 @@ const Contacts = () => {
     });
   }
 
-  const createContact = (id) => {
-    fetch(
-      `${BASE_URL}/Contact`,
-      { method: 'POST' }
-    )
-  }
-
   return (
     <>
       <Row>

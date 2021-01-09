@@ -4,6 +4,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPen, faPlus, faUser } from '@fortawesome/free-solid-svg-icons'
 import useInput from './UseInput';
 
+const BASE_URL = 'https://elite-dev-test-api.azurewebsites.net/api';
+
+const createContact = async (contact) => {
+  return await fetch(`${BASE_URL}/Contact`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json, text/plain, */*',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(contact)
+  })
+  .then(res => res.json());
+}
+
 const EditModal = (props) => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -15,9 +29,18 @@ const EditModal = (props) => {
   const { value:name, bind:bindName, reset:resetName } = useInput(contact ? contact.name : '');
   const { value:email, bind:bindEmail, reset:resetEmail } = useInput(contact ? contact.email : '');
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
       event.preventDefault();
       console.log(`Submitting Name ${name} and Email ${email}`);
+
+      if (contact) {
+        console.log('Update');
+      } else {
+        console.log('Create');
+        const newContact = await createContact({ "name": name, "email": email });
+        console.log(newContact);
+      }
+
       resetName();
       resetEmail();
       handleClose();
