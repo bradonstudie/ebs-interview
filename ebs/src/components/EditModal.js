@@ -18,13 +18,11 @@ const createContact = async (contact) => {
   .then(res => res.json());
 }
 
-const EditModal = (props) => {
+const EditModal = ({addContact, contact}) => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   const [show, setShow] = useState(false);
-
-  const contact = props.contact;
 
   const { value:name, bind:bindName, reset:resetName } = useInput(contact ? contact.name : '');
   const { value:email, bind:bindEmail, reset:resetEmail } = useInput(contact ? contact.email : '');
@@ -36,9 +34,9 @@ const EditModal = (props) => {
       if (contact) {
         console.log('Update');
       } else {
-        console.log('Create');
         const newContact = await createContact({ "name": name, "email": email });
         console.log(newContact);
+        addContact(newContact);
       }
 
       resetName();

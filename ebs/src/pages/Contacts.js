@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faTrash, faUser } from '@fortawesome/free-solid-svg-icons'
+import { faTrash} from '@fortawesome/free-solid-svg-icons'
 import { Table, Button, Row, Spinner, Col } from 'react-bootstrap';
 
 import EditModal from '../components/EditModal';
@@ -10,6 +10,8 @@ const BASE_URL = 'https://elite-dev-test-api.azurewebsites.net/api';
 const Contacts = () => {
   const [contacts, setContacts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const addContact = contact => setContacts([contact, ...contacts].sort((a, b) => a.id < b.id));
 
   useEffect(() =>{
     fetch(
@@ -42,7 +44,7 @@ const Contacts = () => {
         </Col>
         <Col xs={6}>
           <div style={{float: 'right'}}>
-            <EditModal contact={null} />
+            <EditModal contact={null} addContact={addContact} />
           </div>
         </Col>
       </Row>
@@ -75,7 +77,7 @@ const Contacts = () => {
                         </Button>
                       </td>
                       <td>
-                        <EditModal contact={contact} />
+                        <EditModal contact={contact} addContact={addContact} />
                       </td>
                     </tr>
                   ))}
