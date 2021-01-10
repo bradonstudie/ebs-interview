@@ -2,46 +2,44 @@ import React, { useState, } from "react"
 import { Modal, Button, Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPen, faPlus, faUser } from '@fortawesome/free-solid-svg-icons'
-import useInput from './UseInput';
 
-const BASE_URL = 'https://elite-dev-test-api.azurewebsites.net/api';
+import useInput from '../scripts/useInput';
+import { createContact, updateContact } from '../scripts/api';
 
-const createContact = async (contact) => {
-  return await fetch(`${BASE_URL}/Contact`, {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json, text/plain, */*',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(contact)
-  })
-  .then(res => res.json());
-}
-
-const EditModal = ({addContact, contact}) => {
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
+const EditModal = ({addContactRow, updateContactRow, contact}) => {
   const [show, setShow] = useState(false);
+  const { setValue:setName, value:name, bind:bindName, reset:resetName } = useInput(contact ? contact.name : '');
+  const { setValue:setEmail, value:email, bind:bindEmail, reset:resetEmail } = useInput(contact ? contact.email : '');
 
-  const { value:name, bind:bindName, reset:resetName } = useInput(contact ? contact.name : '');
-  const { value:email, bind:bindEmail, reset:resetEmail } = useInput(contact ? contact.email : '');
+  const handleShow = () => setShow(true);
+  const handleClose = (resetFlag) => {
+    setShow(false);
+    if (resetFlag) {
+      if (contact) {
+        setName(contact.name);
+        setEmail(contact.email);
+      } else {
+        resetEmail();
+        resetName();
+      }
+    }
+  }
 
   const handleSubmit = async (event) => {
-      event.preventDefault();
-      console.log(`Submitting Name ${name} and Email ${email}`);
+    event.preventDefault();
+    console.log(`Submitting Name ${name} and Email ${email}`);
 
-      if (contact) {
-        console.log('Update');
-      } else {
-        const newContact = await createContact({ "name": name, "email": email });
-        console.log(newContact);
-        addContact(newContact);
-      }
-
+    if (contact) {
+      const updatedContact = await updateContact({ id: contact.id, name: name, email: email });
+      updateContactRow(updatedContact);
+    } else {
+      const newContact = await createContact({ name: name, email: email });
+      addContactRow(newContact);
       resetName();
       resetEmail();
-      handleClose();
+    }
+
+    handleClose(false);
   }
 
   return (
@@ -63,7 +61,7 @@ const EditModal = ({addContact, contact}) => {
         backdrop="static"
         keyboard={false}
       >
-        <Modal.Header closeButton>
+        <Modal.Header>
           <Modal.Title>
             { contact
                 ? `Edit ${contact.name}`
@@ -94,7 +92,7 @@ const EditModal = ({addContact, contact}) => {
             <Button variant="primary" type="submit" value="Submit">
               { contact ? 'Update' : 'Create' }
             </Button>
-            <Button variant="secondary" onClick={handleClose}>
+            <Button variant="secondary" onClick={() => handleClose(true)}>
               Close
             </Button>
           </Modal.Footer>

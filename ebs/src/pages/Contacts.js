@@ -4,36 +4,30 @@ import { faTrash} from '@fortawesome/free-solid-svg-icons'
 import { Table, Button, Row, Spinner, Col } from 'react-bootstrap';
 
 import EditModal from '../components/EditModal';
-
-const BASE_URL = 'https://elite-dev-test-api.azurewebsites.net/api';
+import { getContacts, deleteContact } from '../scripts/api';
 
 const Contacts = () => {
   const [contacts, setContacts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const addContact = contact => setContacts([contact, ...contacts].sort((a, b) => a.id < b.id));
-
   useEffect(() =>{
-    fetch(
-      `${BASE_URL}/Contact`,
-      { method: 'GET' }
-    )
-    .then(res => res.json())
-    .then(response => {
-      setContacts(response);
+    const fetchData = async () => {
+      const dataContacts = await getContacts();
+      setContacts(dataContacts);
       setIsLoading(false);
-    })
-    .catch(error => console.log(error));
+    }
+    fetchData();
   }, [isLoading]);
 
-  const deleteContact = (id) => {
-    fetch(`${BASE_URL}/Contact/${id}`, {
-      method: 'DELETE',
-    })
-    .then(res => res.json())
-    .then((response) => {
-      setContacts(contacts.filter((el) => el.id !== response.id));
-    });
+  const addContactRow = (contact) => setContacts([contact, ...contacts]);
+
+  const updateContactRow = (contact) => {
+    setContacts([contact, ...contacts.filter((el) => el.id !== contact.id)]);
+  }
+
+  const deleteAndRemoveContactRow = async (id) => {
+    const contactToDelete = await deleteContact(id);
+    setContacts(contacts.filter((el) => el.id !== contactToDelete.id));
   }
 
   return (
@@ -44,7 +38,11 @@ const Contacts = () => {
         </Col>
         <Col xs={6}>
           <div style={{float: 'right'}}>
-            <EditModal contact={null} addContact={addContact} />
+            <EditModal
+              contact={null}
+              addContactRow={addContactRow}
+              updateContactRow={updateContactRow}
+            />
           </div>
         </Col>
       </Row>
@@ -67,17 +65,21 @@ const Contacts = () => {
                 </thead>
                 <tbody>
                   {contacts.map((contact) => (
-                    <tr key={ contact.id }>
-                      <td>{ contact.id }</td>
-                      <td>{ contact.name }</td>
-                      <td>{ contact.email }</td>
+                    <tr key={contact.id}>
+                      <td>{contact.id}</td>
+                      <td>{contact.name}</td>
+                      <td>{contact.email}</td>
                       <td>
-                        <Button variant="danger" onClick={() => deleteContact(contact.id)}>
+                        <Button variant="danger" onClick={() => deleteAndRemoveContactRow(contact.id)}>
                           <FontAwesomeIcon icon={faTrash} />
                         </Button>
                       </td>
                       <td>
-                        <EditModal contact={contact} addContact={addContact} />
+                        <EditModal
+                          contact={contact}
+                          addContactRow={addContactRow}
+                          updateContactRow={updateContactRow}
+                        />
                       </td>
                     </tr>
                   ))}
