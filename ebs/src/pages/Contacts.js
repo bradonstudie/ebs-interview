@@ -53,7 +53,7 @@ const Contacts = () => {
             ? <Spinner animation="border" role="status">
                 <span className="sr-only">Loading...</span>
               </Spinner>
-            : <Table responsive="md" striped bordered hover>
+            : <Table responsive="md" bg="light" striped bordered hover>
                 <thead>
                   <tr>
                     <th>ID</th>

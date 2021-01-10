@@ -1,8 +1,8 @@
 import { Nav, Navbar } from 'react-bootstrap';
 
 const NavigationBar = () => (
-  <Navbar collapseOnSelect expand="lg" bg="light" variant="light" style={{marginBottom: '1rem'}}>
-    <Navbar.Brand href="/">EBS</Navbar.Brand>
+  <Navbar collapseOnSelect expand="lg" variant="light" style={{marginBottom: '1rem'}}>
+    <Navbar.Brand href="/" id="brand">EBS</Navbar.Brand>
     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
     <Navbar.Collapse id="responsive-navbar-nav">
       <Nav className="mr-auto">

@@ -57,7 +57,7 @@ const EditModal = ({addContactRow, updateContactRow, contact}) => {
 
       <Modal
         show={show}
-        onHide={handleClose}
+        onHide={() => handleClose(true)}
         backdrop="static"
         keyboard={false}
       >
