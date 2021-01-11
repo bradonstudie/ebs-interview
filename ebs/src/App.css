@@ -45,6 +45,8 @@ h1, h2, #brand {
   font-family: 'Open Sans', Sans-Serif;
 }
 
+#brand { font-weight: bold; }
+
 table {
   background-color: #ffffff95;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
