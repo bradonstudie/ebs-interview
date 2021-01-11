@@ -1,84 +1,95 @@
-import { Table, Button, Row } from 'react-bootstrap';
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrash} from '@fortawesome/free-solid-svg-icons'
+import { Table, Button, Row, Spinner, Col } from 'react-bootstrap';
 
 import EditModal from '../components/EditModal';
-
-const BASE_URL = 'https://elite-dev-test-api.azurewebsites.net/api';
+import { getContacts, deleteContact } from '../scripts/api';
 
 const Contacts = () => {
   const [contacts, setContacts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() =>{
-    fetch(
-      `${BASE_URL}/Contact`,
-      { method: "GET" }
-    )
-    .then(res => res.json())
-    .then(response => {
-      setContacts(response);
+    const fetchData = async () => {
+      const dataContacts = await getContacts();
+      setContacts(dataContacts);
       setIsLoading(false);
-    })
-    .catch(error => console.log(error));
+    }
+    fetchData();
   }, [isLoading]);
 
+  const addContactRow = (contact) => setContacts([contact, ...contacts]);
+
+  const updateContactRow = (contact) => {
+    setContacts([contact, ...contacts.filter((el) => el.id !== contact.id)]);
+  }
+
+  const deleteAndRemoveContactRow = async (id) => {
+    const contactToDelete = await deleteContact(id);
+    setContacts(contacts.filter((el) => el.id !== contactToDelete.id));
+  }
+
   return (
-    <Row>
-      <h2>
-        Contacts
-      </h2>
+    <>
+      <Row>
+        <Col xs={6}>
+          <h2>Contacts</h2>
+        </Col>
+        <Col xs={6}>
+          <div style={{float: 'right'}}>
+            <EditModal
+              contact={null}
+              addContactRow={addContactRow}
+              updateContactRow={updateContactRow}
+            />
+          </div>
+        </Col>
+      </Row>
 
-      { isLoading && <p>Contacts Loading...</p> }
-
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Delete</th>
-            <th>Edit</th>
-          </tr>
-        </thead>
-        <tbody>
-          {contacts.map((contact) => (
-            <tr key={ contact.id }>
-              <td>{ contact.id }</td>
-              <td>{ contact.name }</td>
-              <td>{ contact.email }</td>
-              <td>
-                <Button
-                  variant="danger"
-                  onClick={() => deleteContact(contact.id)}
-                >
-                  Delete Contact
-                </Button>
-              </td>
-              <td>
-                <EditModal
-                  contact={ contact }
-                >
-                  Edit
-                </EditModal>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    </Row>
+      <Row>
+        <Col>
+          { isLoading
+            ? <Spinner animation="border" role="status">
+                <span className="sr-only">Loading...</span>
+              </Spinner>
+            : <Table responsive="md" bg="light" striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Delete</th>
+                    <th>Edit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {contacts.map((contact) => (
+                    <tr key={contact.id}>
+                      <td>{contact.id}</td>
+                      <td>{contact.name}</td>
+                      <td>{contact.email}</td>
+                      <td>
+                        <Button variant="danger" onClick={() => deleteAndRemoveContactRow(contact.id)}>
+                          <FontAwesomeIcon icon={faTrash} />
+                        </Button>
+                      </td>
+                      <td>
+                        <EditModal
+                          contact={contact}
+                          addContactRow={addContactRow}
+                          updateContactRow={updateContactRow}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+          }
+        </Col>
+      </Row>
+    </>
   );
-}
-
-const deleteContact = (id) => {
-  fetch(`${BASE_URL}/Contact/${id}`, {
-    method: 'DELETE',
-  })
-  .then(res => res.text())
-  .then(res => console.log(res));
-}
-
-const openEditModal = (contact) => {
-  <EditModal contact={ contact }/>
 }
 
 export default Contacts;
